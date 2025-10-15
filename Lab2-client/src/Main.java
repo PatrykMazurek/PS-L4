@@ -1,15 +1,35 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.io.*;
+import java.net.Socket;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        try {
+            Socket socket = new Socket("localhost", 5050);
+
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            Scanner scanner = new Scanner(System.in);
+            String line = "";
+            System.out.println("Nawiązano połączenie z serwerem, możesz przesłać teskt");
+            while(true){
+                line = scanner.nextLine();
+                writer.println(line);
+                if (line.trim().equals("q")){
+                    System.out.println(reader.readLine());
+                    break;
+                }
+                System.out.println(reader.readLine());
+            }
+
+            reader.close();
+            writer.close();
+            socket.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
